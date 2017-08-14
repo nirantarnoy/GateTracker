@@ -6,6 +6,12 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use common\models\User;
+use common\models\UserRole;
+use yii\web\Session;
+
+$session = new Session();
+$session->open();
 
 /**
  * Site controller
@@ -76,12 +82,23 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+          $use = User::findOne(Yii::$app->user->id);
+          $session = new Session();
+          $session->open();
+          $session['username'] = $use->username;
+          $session['groupid'] = $use->group_id;
+          $session['roleid'] = $use->role_id;
+          $session['roleaction'] = $this->getRoleaction($use->role_id);
             return $this->goBack();
         } else {
             return $this->render('login', [
                 'model' => $model,
             ]);
         }
+    }
+    public function getRoleaction($role){
+      $model = UserRole::find()->where(['id'=>$role])->one();
+      return count($model)>0?$model->is_office:0;
     }
 
     /**
@@ -92,7 +109,7 @@ class SiteController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
-        return $this->goHome();
+return $this->redirect(['/site/login']);
+        //return $this->goHome();
     }
 }

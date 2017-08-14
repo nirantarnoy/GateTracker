@@ -12,7 +12,15 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
     'modules' => [],
+    'defaultRoute' =>'dashboard',
     'components' => [
+        'view'=>[
+                'theme'=>[
+                  'pathMap'=>[
+                       '@app/views' => '@backend/views/layouts/yii2-app'
+                             ]
+                 ],
+        ],
         'request' => [
             'csrfParam' => '_csrf-backend',
         ],
@@ -45,6 +53,19 @@ return [
             ],
         ],
         */
+        'nodeSocket' => [
+    		    'class' => '\YiiNodeSocket\NodeSocket',
+    		    //'dbOptions' => '',
+    		    'host' => '127.0.0.1',
+    		    'allowedServerAddresses' => [
+    		        "localhost",
+    		        "127.0.0.1"
+    		    ],
+    		    'origin' => '*:*',
+    		    'sessionVarName' => 'PHPSESSID',
+    		    'port' => 3001,
+    		    'socketLogFile' => '/var/log/node-socket.log',
+    		],
     ],
     'params' => $params,
 ];
